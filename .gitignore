@@ -1,0 +1,3 @@
+bin/*
+obsolete/*
+.gdb_history
