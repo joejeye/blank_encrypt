@@ -61,7 +61,8 @@ namespace BEProd {
 		bool readOneChar(string& txt);
 
 		/*
-		Read in 8 characters and concatenate them into a string
+		Read in 8 characters and concatenate them into a string.
+		This function should only be used for decryption
 		*/
 		bool read8Chars(string&);
 

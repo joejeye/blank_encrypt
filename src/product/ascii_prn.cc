@@ -67,15 +67,22 @@ bool SeqEndecr::readOneChar(string& txt) {
 
 bool SeqEndecr::read8Chars(string& txt) {
     string str = "";
-    for (int i = 0; i < 8; i++) {
+    int i = 0;
+    while (i < 8) {
         string onechar_str;
         bool readOK = this->readOneChar(onechar_str);
         if (!readOK) {
             return false;
         }
 
+        if (onechar_str == "\r") {
+            continue;
+        }
+
         str += onechar_str;
+        i++;
     }
+
     txt = str;
     return true;
 }
