@@ -65,6 +65,22 @@ bool SeqEndecr::readOneChar(string& txt) {
 }
 
 
+bool SeqEndecr::read8Chars(string& txt) {
+    string str = "";
+    for (int i = 0; i < 8; i++) {
+        string onechar_str;
+        bool readOK = this->readOneChar(onechar_str);
+        if (!readOK) {
+            return false;
+        }
+
+        str += onechar_str;
+    }
+    txt = str;
+    return true;
+}
+
+
 bool SeqEndecr::encrOneChar(string& se_str) {
     string txt;
     bool readOK = this->readOneChar(txt);
@@ -80,7 +96,7 @@ bool SeqEndecr::encrOneChar(string& se_str) {
 
 bool SeqEndecr::decrOneChar(string& txt) {
     string se_str;
-    bool readOK = this->readOneChar(se_str);
+    bool readOK = this->read8Chars(se_str);
     if (!readOK) {
         return false;
     }
@@ -91,7 +107,7 @@ bool SeqEndecr::decrOneChar(string& txt) {
 }
 
 
-bool SeqEndecr::procOneChar() {
+bool SeqEndecr::procOneStep() {
     string str_to_write;
     bool done;
     if (this->direction) {
@@ -99,7 +115,8 @@ bool SeqEndecr::procOneChar() {
         done = this->encrOneChar(str_to_write);
     }
     else {
-        // Decrypt one character
+        // Decrypt one character (read in 8 char's from
+        // the encrypted text, write out 1 char)
         done = this->decrOneChar(str_to_write);
     }
 
@@ -119,7 +136,7 @@ bool SeqEndecr::procOneChar() {
 void SeqEndecr::run() {
     bool running;
     do {
-        running = this->procOneChar();
+        running = this->procOneStep();
     } while (running);
     if (this->direction) {
         cout << "Encryption succeeded" << endl;
@@ -143,6 +160,9 @@ int main(int argc, char** argv) {
     CLI::App app;
     IOInterface::MainArgs args;
     int parsed = IOInterface::parseArgs(argc, argv, app, args);
+    if (parsed != 0) {
+        throw invalid_argument("[main] Error in parsing input arguments");
+    }
 
     // Predefined BINARY LAYER PRN code generator tap positions
     string taps = "0257";
