@@ -18,6 +18,7 @@ The struct that holds the input arguments
 struct MainArgs {
     bool encr_flag = false;
     bool decr_flag = false;
+    bool not_seq = false;
     string input_file = "";
     string output_file = "";
 };
@@ -39,6 +40,19 @@ string readTxt(const string input_file);
 Write out the text to the output file
 */
 bool writeTxt(const string& txt, const string output_file);
+
+
+/*
+Read in each char from a text file sequentially
+*/
+bool sequentialRead(ifstream& file, char& ch);
+
+
+/*
+Write out each char (not limited to ASCII) to a text file sequentially
+*/
+bool sequentialWrite(ofstream& file, char ch);
+bool sequentialWrite(ofstream& file, string str);
 
 }
 

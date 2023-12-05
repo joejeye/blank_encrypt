@@ -1,12 +1,6 @@
-#include "../ENCODING_LAYER/ascii_endec.hpp"
-#include "../BINARY_LAYER/prn_scrambling.hpp"
-#include "../BINARY_LAYER/south_interface.hpp"
-#include "../IO_INTERFACE/io_interface.hpp"
-#include <fstream>
-#include <sstream>
+#include "ascii_prn.hpp"
 
-using namespace std;
-
+namespace BEProd {
 
 /*
 Perform encryption
@@ -34,7 +28,7 @@ Perform decryption
 string decrypt(const string& se_str, const string taps) {
     // Translate space-enter string to binary string
     string scrambledBinStr = BinaryLayer::encrTxt2bintxt(se_str);
-    
+
     // Create PRN code generator
     BinaryLayer::prn_generator pgen(taps);
 
@@ -47,6 +41,102 @@ string decrypt(const string& se_str, const string taps) {
     return txt;
 }
 
+SeqEndecr::SeqEndecr(
+    const string infilename,
+    const string outfilename,
+    const bool endecrFlag,
+    const string taps
+) {
+    this->readfile = ifstream(infilename, ios::binary);
+    this->writefile = ofstream(outfilename, ios::app);
+    this->pgen = BinaryLayer::prn_generator(taps);
+    this->direction = endecrFlag;
+}
+
+
+bool SeqEndecr::readOneChar(string& txt) {
+    char ch;
+    bool reading = IOInterface::sequentialRead(this->readfile, ch);
+    if (!reading) {
+        return false;
+    }
+    txt = string(1, ch);
+    return true;
+}
+
+
+bool SeqEndecr::encrOneChar(string& se_str) {
+    string txt;
+    bool readOK = this->readOneChar(txt);
+    if (!readOK) {
+        return false;
+    }
+    string binStr = EncodingLayer::txt2bintxt(txt);
+    string scrambledBinStr = BinaryLayer::applySramble(binStr, this->pgen);
+    se_str = BinaryLayer::encrBin(scrambledBinStr);
+    return true;
+}
+
+
+bool SeqEndecr::decrOneChar(string& txt) {
+    string se_str;
+    bool readOK = this->readOneChar(se_str);
+    if (!readOK) {
+        return false;
+    }
+    string scrambledBinStr = BinaryLayer::encrTxt2bintxt(se_str);
+    string binStr = BinaryLayer::applySramble(scrambledBinStr, this->pgen);
+    txt = EncodingLayer::binStr2Txt(binStr);
+    return true;
+}
+
+
+bool SeqEndecr::procOneChar() {
+    string str_to_write;
+    bool done;
+    if (this->direction) {
+        // Encrypt one character
+        done = this->encrOneChar(str_to_write);
+    }
+    else {
+        // Decrypt one character
+        done = this->decrOneChar(str_to_write);
+    }
+
+    if (!done) {
+        return false;
+    }
+    
+    bool charDone = IOInterface::sequentialWrite(this->writefile, str_to_write);
+    if (!charDone) {
+        throw runtime_error("[SeqEndecr::procOneChar] Failed processing one of the char's");
+    }
+
+    return true;
+}
+
+
+void SeqEndecr::run() {
+    bool running;
+    do {
+        running = this->procOneChar();
+    } while (running);
+    if (this->direction) {
+        cout << "Encryption succeeded" << endl;
+    }
+    else {
+        cout << "Decryption succeeded" << endl;
+    }
+}
+
+
+} // namespace BEProd
+
+
+using namespace BEProd;
+
+
+
 
 int main(int argc, char** argv) {
     // Parse input arguments
@@ -58,25 +148,49 @@ int main(int argc, char** argv) {
     string taps = "0257";
 
     if (args.encr_flag) { // Perform encryption
-        string txt = IOInterface::readTxt(args.input_file);
-        string se_str = encrypt(txt, taps);
-        bool done = IOInterface::writeTxt(se_str, args.output_file);
-        if (done) {
-            cout << "Encryption succeeded" << endl;
-        } else {
-            cout << "Encryption failed" << endl;
+        if (args.not_seq) {
+            string txt = IOInterface::readTxt(args.input_file);
+            string se_str = encrypt(txt, taps);
+            bool done = IOInterface::writeTxt(se_str, args.output_file);
+            if (done) {
+                cout << "Encryption succeeded" << endl;
+            }
+            else {
+                cout << "Encryption failed" << endl;
+            }
+        }
+        else {
+            SeqEndecr encryptor(
+                args.input_file,
+                args.output_file,
+                true,
+                taps
+            );
+            encryptor.run();
         }
         return 0;
     }
 
     if (args.decr_flag) { // Perform decryption
-        string encrdtxt = IOInterface::readTxt(args.input_file);
-        string txt = decrypt(encrdtxt, taps);
-        bool done = IOInterface::writeTxt(txt, args.output_file);
-        if (done) {
-            cout << "Decryption succeeded" << endl;
-        } else {
-            cout << "Decryption failed" << endl;
+        if (args.not_seq) {
+            string encrdtxt = IOInterface::readTxt(args.input_file);
+            string txt = decrypt(encrdtxt, taps);
+            bool done = IOInterface::writeTxt(txt, args.output_file);
+            if (done) {
+                cout << "Decryption succeeded" << endl;
+            }
+            else {
+                cout << "Decryption failed" << endl;
+            }
+        }
+        else {
+            SeqEndecr decryptor(
+                args.input_file,
+                args.output_file,
+                false,
+                taps
+            );
+            decryptor.run();
         }
         return 0;
     }

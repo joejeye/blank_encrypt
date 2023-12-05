@@ -10,16 +10,19 @@ int parseArgs(int argc, char** argv, CLI::App& app, MainArgs& args) {
     // CLI::App app;
 
     bool encr_flag{false};
-    app.add_flag("-e,--encrypt", encr_flag, "When set to true, perform encryption.");
+    app.add_flag("-e,--encrypt", encr_flag, "Perform encryption.");
 
     bool decr_flag{false};
-    app.add_flag("-d,--decrypt", decr_flag, "When set to true, perform decryption.");
+    app.add_flag("-d,--decrypt", decr_flag, "Perform decryption.");
 
     string input_file{""};
     app.add_option("-i,--input", input_file, "Specify the input file name");
 
     string output_file{""};
     app.add_option("-o,--output", output_file, "Specify the output file name");
+
+    bool not_seq{ false }; // Process sequentially
+    app.add_flag("-n,--notsequential", not_seq, "Do not process sequentially");
 
     CLI11_PARSE(app, argc, argv);
 
@@ -37,6 +40,7 @@ int parseArgs(int argc, char** argv, CLI::App& app, MainArgs& args) {
     // MainArgs args;
     args.encr_flag = encr_flag;
     args.decr_flag = decr_flag;
+    args.not_seq = not_seq;
     args.input_file = input_file;
     args.output_file = output_file;
 
@@ -77,6 +81,43 @@ bool writeTxt(const string& txt, const string output_file) {
 
     out_f.close();
 
+    return true;
+}
+
+/*
+Read in each ASCII char from a text file sequentially
+*/
+bool sequentialRead(ifstream& file, char& ch) {
+    if (!file.is_open()) {
+        throw invalid_argument("[sequentialRead] File is not open");
+    }
+
+    char readin;
+    if (file.get(readin)) {
+        ch = readin;
+        return true;
+    }
+    else { // Reach the end of file
+        return false;
+    }
+}
+
+
+/*
+Write out each char (not limited to ASCII) to a text file sequentially
+*/
+bool sequentialWrite(ofstream& file, char ch) {
+    string str(1, ch);
+    return sequentialWrite(file, str);
+}
+
+bool sequentialWrite(ofstream& file, string str) {
+    if (!file.is_open()) {
+        throw invalid_argument("[sequentialWrite] File is not open");
+    }
+    // Write the char (casted as a string) to the file without
+    // prepending/appending a newline
+    file << str;
     return true;
 }
 
