@@ -43,13 +43,12 @@ namespace BEProd {
 		/*
 		Process one char: read in the char and encrypt it and then wirte it out to the output file
 		*/
-		bool procOneChar();
+		bool procOneStep();
 
 		/*
 		Encrypt one character
 		*/
 		bool encrOneChar(string& se_str);
-
 
 		/*
 		Decrypt one charactor
@@ -60,6 +59,11 @@ namespace BEProd {
 		Read in one character and cast it to a string
 		*/
 		bool readOneChar(string& txt);
+
+		/*
+		Read in 8 characters and concatenate them into a string
+		*/
+		bool read8Chars(string&);
 
 		/*
 		Run the object for encryption/decryption
