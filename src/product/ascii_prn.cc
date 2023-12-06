@@ -196,7 +196,7 @@ int main(int argc, char** argv) {
 
     // Flush output file upon being requested
     if (args.flush) {
-        BEProd::SeqEndecr::flush(args.output_file);
+        SeqEndecr::flush(args.output_file);
     }    
 
     if (args.encr_flag) { // Perform encryption
