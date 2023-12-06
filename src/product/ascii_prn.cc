@@ -75,7 +75,7 @@ bool SeqEndecr::read8Chars(string& txt) {
             return false;
         }
 
-        if (onechar_str == "\r") {
+        if (onechar_str != "\n" && onechar_str != " ") {
             continue;
         }
 
@@ -154,6 +154,26 @@ void SeqEndecr::run() {
 }
 
 
+void SeqEndecr::closeFiles() {
+    if (this->readfile.is_open()) {
+        this->readfile.close();
+    }
+    
+    if (this->writefile.is_open()) {
+        this->writefile.close();
+    }
+}
+
+    // This is a static method
+    void SeqEndecr::flush(const string filename) {
+    ofstream file(filename, ofstream::out | ofstream::trunc);
+    if (!file.is_open()) {
+        throw runtime_error("[SeqEndecr::flush] Failed to flush the file: " + filename);
+    }
+    file.close();
+}
+
+
 } // namespace BEProd
 
 
@@ -173,6 +193,11 @@ int main(int argc, char** argv) {
 
     // Predefined BINARY LAYER PRN code generator tap positions
     string taps = "0257";
+
+    // Flush output file upon being requested
+    if (args.flush) {
+        BEProd::SeqEndecr::flush(args.output_file);
+    }    
 
     if (args.encr_flag) { // Perform encryption
         if (args.not_seq) {
@@ -194,6 +219,7 @@ int main(int argc, char** argv) {
                 taps
             );
             encryptor.run();
+            encryptor.closeFiles();
         }
         return 0;
     }
@@ -218,6 +244,7 @@ int main(int argc, char** argv) {
                 taps
             );
             decryptor.run();
+            decryptor.closeFiles();
         }
         return 0;
     }

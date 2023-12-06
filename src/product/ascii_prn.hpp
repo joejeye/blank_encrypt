@@ -70,6 +70,17 @@ namespace BEProd {
 		Run the object for encryption/decryption
 		*/
 		void run();
+
+		/*
+		Close opened files
+		*/
+		void closeFiles();
+
+		/*
+		Flush the output file in preparation for writing new text
+		*/
+		static void flush(const string filename);
+
 	};
 
 } // namespace BEProd

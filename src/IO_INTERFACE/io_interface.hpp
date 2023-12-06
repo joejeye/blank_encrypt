@@ -19,6 +19,7 @@ struct MainArgs {
     bool encr_flag = false;
     bool decr_flag = false;
     bool not_seq = false;
+    bool flush = false;
     string input_file = "";
     string output_file = "";
 };

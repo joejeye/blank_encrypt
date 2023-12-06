@@ -24,6 +24,9 @@ int parseArgs(int argc, char** argv, CLI::App& app, MainArgs& args) {
     bool not_seq{ false }; // Process sequentially
     app.add_flag("-n,--notsequential", not_seq, "Do not process sequentially");
 
+    bool flush{ false }; // Flush output file
+    app.add_flag("-f,--flush", flush, "Flush output file");
+
     CLI11_PARSE(app, argc, argv);
 
     if (!encr_flag && !decr_flag) {
@@ -41,6 +44,7 @@ int parseArgs(int argc, char** argv, CLI::App& app, MainArgs& args) {
     args.encr_flag = encr_flag;
     args.decr_flag = decr_flag;
     args.not_seq = not_seq;
+    args.flush = flush;
     args.input_file = input_file;
     args.output_file = output_file;
 
