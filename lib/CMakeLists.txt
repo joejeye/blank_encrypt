@@ -1,0 +1,1 @@
+# Nothing to write for a header-only directory

@@ -25,7 +25,7 @@ int parseArgs(int argc, char** argv, CLI::App& app, MainArgs& args) {
     app.add_flag("-n,--notsequential", not_seq, "Do not process sequentially");
 
     bool flush{ false }; // Flush output file
-    app.add_flag("-f,--flush", flush, "Flush output file");
+    app.add_flag("-f,--flush", flush, "Flush output file before writing to the file");
 
     CLI11_PARSE(app, argc, argv);
 

@@ -1,3 +1,4 @@
 bin/*
 obsolete/*
 .gdb_history
+build/*
