@@ -1,6 +1,7 @@
 #ifndef _H_UTF8_PRN
 #define _H_UTF8_PRN
 
+//#include <filesystem>
 #include "../IO_INTERFACE/io_interface.hpp"
 #include "../ENCODING_LAYER/utf8_encode.hpp"
 #include "../ENCODING_LAYER/utf8_decode.hpp"
@@ -8,7 +9,9 @@
 #include "../BINARY_LAYER/prn_scrambling.hpp"
 #include "../BINARY_LAYER/south_interface.hpp"
 
+
 using namespace std;
+//namespace fs = filesystem;
 
 // BEProd stands for Blank Encrypt Product
 namespace BEProd {
@@ -22,7 +25,7 @@ namespace BEProd {
 
 		ofstream writefile;
 
-		BinaryLayer::prn_generator pgen = BinaryLayer::prn_generator("0"); // Dummy instance
+		BinaryLayer::prn_generator pgen;// = BinaryLayer::prn_generator("0"); // Dummy instance
 
 		/*
 		True for encryption, false for decryption
@@ -78,9 +81,13 @@ namespace BEProd {
 		Flush the output file in preparation for writing new text
 		*/
 		static void flush(const string filename);
-	};
+	}; // class SeqEndecrU8
 
-
+	
+	/*
+	Create the encryption in the cach directory
+	*/
+	static bool createCachedkey(const string cachDir, const string hexKey);
 } // namespace BEProd
 
 #endif // !_H_UTF8_PRN

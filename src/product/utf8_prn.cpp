@@ -7,7 +7,8 @@ namespace BEProd {
 		const string outfilename,
 		const bool endecrFlag,
 		const string taps
-	) {
+	) : pgen(taps) 
+	{
 		this->readfile = ifstream(infilename, ios::binary);
 		this->writefile = ofstream(outfilename, ios::app);
 		this->pgen = BinaryLayer::prn_generator(taps);
@@ -168,6 +169,43 @@ namespace BEProd {
 		}
 		file.close();
 	}
+
+	
+	static bool createCachedkey(const string cachDir = "cach_key", const string hexKey = "key.txt") {
+		/*
+		Check if the specified directory exists:
+			If not, create one;
+			if yes check if there is a key already generated:
+				if not, generate the key;
+				if yes, throw error
+		*/
+
+		// Create the directory if it does not exists
+		if (!IOInterface::directoryExists(cachDir)) {
+			bool createDone = IOInterface::createDirectory(cachDir);
+			if (!createDone) {
+				/*cerr << ("Failed to create directory: " + cachDir) << endl;
+				return false;*/
+				throw runtime_error("Failed to create directory: " + cachDir);
+			}
+		}
+		
+		// Check if the key already exists
+		string pathToKey = cachDir + "/" + hexKey;
+		if (IOInterface::fileExists(pathToKey)) {
+			throw runtime_error("The key " + pathToKey + " exists already");
+		}
+
+		// The key does not exist. Then create one and store it in the cach directory
+		string theKey = BinaryLayer::prn_generator::genKey(); // Create the key
+		bool writeDone = IOInterface::writeTxt(theKey, pathToKey);
+		if (!writeDone) {
+			throw runtime_error("Failed to write the encryption key to " + pathToKey);
+		}
+
+		cout << ("Successfully generated the encryption key") << endl;
+		return true;
+	}
 } // namespace BEProd
 
 
@@ -183,8 +221,27 @@ int main(int argc, char** argv) {
 		throw invalid_argument("[main] Error in parsing input arguments");
 	}
 
+	// Hardcode the directory name
+	string dirname = "cach_key";
+
+	if (!args.genKey.empty()) { // Generate the encryption key and store it in the specified directory
+		bool done = createCachedkey("cach_key", args.genKey);
+		if (!done) {
+			throw runtime_error("[main] Failed to create the encryption key");
+		}
+	}
+
 	// Predefined BINARY LAYER PRN code generator tap positions
-	string taps = "0257";
+	//string taps = "0257";
+
+	// Load the encryption key
+	if (args.hexKey.empty()) {
+		//throw invalid_argument("[main] The encryption key must be specified");
+		cout << "No encryption key specified. Program terminated without encrypting." << endl;
+		return 0;
+	}
+	string pathToKey = dirname + "/" + args.hexKey;
+	string taps = IOInterface::readTxt(pathToKey); // The naming `taps` is a legacy problem
 
 	// Flush output file upon being requested
 	if (args.flush) {
