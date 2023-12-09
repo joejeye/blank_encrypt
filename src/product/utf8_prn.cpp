@@ -11,7 +11,7 @@ namespace BEProd {
 	{
 		this->readfile = ifstream(infilename, ios::binary);
 		this->writefile = ofstream(outfilename, ios::app);
-		this->pgen = BinaryLayer::prn_generator(taps);
+		// this->pgen = BinaryLayer::prn_generator(taps);
 		this->direction = endecrFlag;
 	}
 
