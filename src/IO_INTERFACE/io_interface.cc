@@ -21,6 +21,12 @@ int parseArgs(int argc, char** argv, CLI::App& app, MainArgs& args) {
     string output_file{""};
     app.add_option("-o,--output", output_file, "Specify the output file name");
 
+    string genKey{ "" }; // The name of the file to store the encryption key
+    app.add_option("-g,--generateKet", genKey, "Generate an encryption key and store it in the specified directory");
+
+    string hexKey{ "" };
+    app.add_option("-k,--key", hexKey, "Specify the encryption key in hexadecimal format");
+
     bool not_seq{ false }; // Process sequentially
     app.add_flag("-n,--notsequential", not_seq, "Do not process sequentially");
 
@@ -47,6 +53,8 @@ int parseArgs(int argc, char** argv, CLI::App& app, MainArgs& args) {
     args.flush = flush;
     args.input_file = input_file;
     args.output_file = output_file;
+    args.genKey = genKey;
+    args.hexKey = hexKey;
 
     return 0;
 }
@@ -126,4 +134,38 @@ bool sequentialWrite(ofstream& file, string str) {
 }
 
 
+#ifdef _WIN32
+bool createDirectory(const std::string& dirName) {
+    if (_mkdir(dirName.c_str()) == -1) {
+        return false;
+    }
+    return true;
 }
+#else
+bool createDirectory(const std::string& dirName) {
+    if (mkdir(dirName.c_str(), 0755) == -1) {
+        return false;
+    }
+    return true;
+}
+#endif
+
+
+bool directoryExists(const std::string& dirName) {
+    struct stat info;
+    if (stat(dirName.c_str(), &info) != 0)
+        return false; // Cannot access directory
+    else if (info.st_mode & S_IFDIR)
+        return true; // Directory exists
+    else
+        return false; // Directory does not exist
+}
+
+
+bool fileExists(const std::string& fileName) {
+    std::ifstream file(fileName);
+    return file.good();
+}
+
+
+} // namespace IOInterface

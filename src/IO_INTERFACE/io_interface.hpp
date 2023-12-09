@@ -8,6 +8,12 @@
 #include <fstream>
 #include <sstream>
 
+#ifdef _WIN32
+#include <direct.h> // Use _mkdir on Windows
+#else
+#include <sys/stat.h> // Use mkdir on Unix/Linux
+#endif
+
 using namespace std;
 
 namespace IOInterface {
@@ -22,6 +28,8 @@ struct MainArgs {
     bool flush = false;
     string input_file = "";
     string output_file = "";
+    string genKey = "";
+    string hexKey = "";
 };
 
 
@@ -55,7 +63,26 @@ Write out each char (not limited to ASCII) to a text file sequentially
 bool sequentialWrite(ofstream& file, char ch);
 bool sequentialWrite(ofstream& file, string str);
 
-}
+
+/*
+Create a directory. Implementation varies with platform
+*/
+bool createDirectory(const std::string& dirName);
+
+
+/*
+Check if the specified directoy exists
+*/
+bool directoryExists(const std::string& dirName);
+
+
+/*
+Check if the specified file exists
+*/
+bool fileExists(const std::string& fileName);
+
+
+} // namespace IOInterface
 
 
 #endif // _H_IO_INTERFACE
