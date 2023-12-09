@@ -94,7 +94,7 @@ string prn_generator::next() {
 
     // Prepend the resultant bit to the PRN sequence and
     // discard the last bit
-    string new_prn = newbit + this->prn_seq.substr(0, 7);
+    string new_prn = newbit + this->prn_seq.substr(0, this->prn_seq.length() - 1);
     this->prn_seq = new_prn;
 
     // Move the iterator to the beginning
