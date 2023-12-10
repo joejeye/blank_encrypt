@@ -35,7 +35,7 @@ if __name__ == "__main__":
     # input folder
     for file in file_list:
         result = subprocess.run(
-            [args.executable, "-f", p, "-i", f"{args.inputfolder}\\{file}", "-o", f"{args.outputfolder}\\{file}"],
+            [args.executable, "-k", "newkey.txt", "-f", p, "-i", f"{args.inputfolder}\\{file}", "-o", f"{args.outputfolder}\\{file}"],
             shell=True, text=True,
         )
         print(result.stdout)
