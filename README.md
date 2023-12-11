@@ -1,5 +1,5 @@
 # Blank-Encryption Project
-Implement simple stream-cipher symmetric encrytion/decryption algorithm, and encode the encrypted text into a "blank" text file.
+Implement simple stream-cipher symmetric encryption/decryption algorithm, and encode the encrypted text into a "blank" text file.
 
 # How To Build
 ## On Ubuntu 22.04
@@ -29,7 +29,7 @@ Place the built binary executable in a standalone directory/folder.
 blank_encrypt.exe -g newkey.txt -e -i dummyin -o dummyout
 ```
 
-## Peform Encrytion
+## Peform Encryption
 Replace the `unencrypted.txt` and `encrypted.txt` with you file names in the following commands in this section.
 
 ### On Ubuntu 22.04
