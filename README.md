@@ -30,7 +30,7 @@ blank_encrypt.exe -g newkey.txt -e -i dummyin -o dummyout
 ```
 
 ## Peform Encryption
-Replace the `unencrypted.txt` and `encrypted.txt` with you file names in the following commands in this section.
+Replace the `unencrypted.txt` and `encrypted.txt` with your file names in the following commands in this section.
 
 ### On Ubuntu 22.04
 ```shell
@@ -43,7 +43,7 @@ blank_encrypt.exe -k newkey.txt -f -e -i unencrypted.txt -o encrypted.txt
 ```
 
 ## Perform Decryption
-Replace the `encrypted.txt` and `decrypted.txt` with you file names in the following commands in this section.
+Replace the `encrypted.txt` and `decrypted.txt` with your file names in the following commands in this section.
 
 ### On Ubuntu 22.04
 ```shell
