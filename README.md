@@ -6,6 +6,7 @@ Implement simple stream-cipher symmetric encrytion/decryption algorithm, and enc
 Change into the the project root directory, and then type the following commands in the terminal:
 ```shell
 mkdir build
+cd build
 cmake ..
 make
 ```
@@ -33,12 +34,12 @@ Replace the `unencrypted.txt` and `encrypted.txt` with you file names in the fol
 
 ### On Ubuntu 22.04
 ```shell
-./blank_encrypt -k newkey.txt -e -i unencrypted.txt -o encrypted.txt
+./blank_encrypt -k newkey.txt -f -e -i unencrypted.txt -o encrypted.txt
 ```
 
 ### On Windows 11
 ```ps1
-blank_encrypt.exe -k newkey.txt -e -i unencrypted.txt -o encrypted.txt
+blank_encrypt.exe -k newkey.txt -f -e -i unencrypted.txt -o encrypted.txt
 ```
 
 ## Perform Decryption
@@ -46,12 +47,12 @@ Replace the `encrypted.txt` and `decrypted.txt` with you file names in the follo
 
 ### On Ubuntu 22.04
 ```shell
-./blank_encrypt -k newkey.txt -d -i encrypted.txt -o decrypted.txt
+./blank_encrypt -k newkey.txt -f -d -i encrypted.txt -o decrypted.txt
 ```
 
 ### On Windows 11
 ```ps1
-blank_encrypt.exe -k newkey.txt -d -i encrypted.txt -o decrypted.txt
+blank_encrypt.exe -k newkey.txt -f -d -i encrypted.txt -o decrypted.txt
 ```
 
 # Input Arguments
